@@ -4,7 +4,7 @@
   "description": "Este é o servidor do sistema de financas da maratona dev",
   "main": "src/server.js",
   "scripts": {
-    "build": "tsup src",
+    "build": "tsc",
     "dev": "tsnd --exit-child src/server.ts",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio"
