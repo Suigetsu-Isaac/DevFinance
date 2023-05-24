@@ -64,7 +64,7 @@ const DOM = {
       <td class=${CSSClass}>${amount}</td>
       <td class="date">${transaction.date}</td>
       <td>
-          <img src="./assets/minus.svg" alt="Remover Transação" />
+          <img src="./assets/minus.svg" id=${transaction.id} alt="Remover Transação" />
       </td>
     </tr>
     `;
@@ -99,8 +99,36 @@ const Utils = {
   },
 };
 
-const url = "http://localhost:3333/";
+const url = "https://devfinance.onrender.com/";
 
+function removeTransaction(index) {
+  const transactionId = trans.transactions[index].id;
+
+  // Remova a transação da lista usando o índice fornecido
+  trans.transactions.splice(index, 1);
+
+  // Remova o registro da API usando o fetch
+  fetch(`${url}${transactionId}`, {
+    method: 'DELETE',
+  })
+    .then((response) => {
+      if (response.ok) {
+        // Limpe a tabela e atualize-a novamente
+        DOM.Conteiner.innerHTML = '';
+        trans.transactions.forEach((transaction, newIndex) => {
+          DOM.addTransaction(newIndex, transaction);
+        });
+
+        // Atualize os saldos
+        DOM.updateBalance();
+      } else {
+        console.log('Ocorreu um erro ao excluir o registro.');
+      }
+    })
+    .catch((error) => {
+      console.log('Ocorreu um erro:', error);
+    });
+}
 
 
 function executarFetch() {
@@ -171,34 +199,6 @@ function executarFetch() {
 
 
 
-function removeTransaction(index) {
-  const transactionId = trans.transactions[index].id;
-
-  // Remova a transação da lista usando o índice fornecido
-  trans.transactions.splice(index, 1);
-
-  // Remova o registro da API usando o fetch
-  fetch(`${url}${transactionId}`, {
-    method: 'DELETE',
-  })
-    .then((response) => {
-      if (response.ok) {
-        // Limpe a tabela e atualize-a novamente
-        DOM.Conteiner.innerHTML = '';
-        trans.transactions.forEach((transaction, newIndex) => {
-          DOM.addTransaction(newIndex, transaction);
-        });
-
-        // Atualize os saldos
-        DOM.updateBalance();
-      } else {
-        console.log('Ocorreu um erro ao excluir o registro.');
-      }
-    })
-    .catch((error) => {
-      console.log('Ocorreu um erro:', error);
-    });
-}
 
 
 executarFetch();
